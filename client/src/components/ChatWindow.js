@@ -380,7 +380,7 @@ const ChatWindow = ({ conversation }) => {
                   {message.type === 'image' ? (
                     <Box sx={{ mt: 1 }}>
                       <img
-                        src={`http://localhost:5000${message.content}`}
+                        src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${message.content}`}
                         alt="Shared image"
                         style={{
                           maxWidth: '100%',
@@ -388,12 +388,17 @@ const ChatWindow = ({ conversation }) => {
                           borderRadius: '8px',
                           cursor: 'pointer'
                         }}
-                        onClick={() => window.open(`http://localhost:5000${message.content}`, '_blank')}
+                        onClick={() => {
+                          const serverUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+                          window.open(`${serverUrl}${message.content}`, '_blank');
+                        }}
                         onLoad={() => {
-                          console.log('Image loaded successfully:', `http://localhost:5000${message.content}`);
+                          const serverUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+                          console.log('Image loaded successfully:', `${serverUrl}${message.content}`);
                         }}
                         onError={(e) => {
-                          console.error('Image failed to load:', `http://localhost:5000${message.content}`);
+                          const serverUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+                          console.error('Image failed to load:', `${serverUrl}${message.content}`);
                           console.error('Original content:', message.content);
                           // Show a placeholder instead of hiding
                           e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4=';

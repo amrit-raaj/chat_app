@@ -19,13 +19,14 @@ export const SocketProvider = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      // Create socket connection
-      const newSocket = io('http://localhost:5000', {
+    if (user) {
+      // Initialize socket connection
+      const serverUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+      const newSocket = io(serverUrl, {
+        withCredentials: true,
         auth: {
-          token: localStorage.getItem('token') || document.cookie.split('token=')[1]?.split(';')[0]
-        },
-        withCredentials: true
+          token: localStorage.getItem('token') // If you're using token-based auth
+        }
       });
 
       // Connection event handlers
